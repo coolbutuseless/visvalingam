@@ -15,6 +15,8 @@
 #' @param x,y points
 #' @param n number of points to keep
 #'
+#' @return list with elements \code{x} and \code{y} of the simplified line
+#'
 #' @export
 #'
 #' @examples
@@ -44,6 +46,9 @@ vis_simplify <- function(x, y, n) {
 #'
 #'
 #' @param x,y points
+#'
+#' @return numeric vector of areas - one for each point.  The first and last
+#' points are assigned an infinite area.
 #'
 #' @export
 #'
