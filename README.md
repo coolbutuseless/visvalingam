@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 ![](https://img.shields.io/badge/cool-useless-green.svg)
+[![R-CMD-check](https://github.com/coolbutuseless/visvalingam/workflows/R-CMD-check/badge.svg)](https://github.com/coolbutuseless/visvalingam/actions)
 <!-- badges: end -->
 
 `{visvilingam}` implements Visvilngam’s Line Simplification Algorithm,
@@ -164,8 +165,8 @@ res <- bench::mark(
 
 | expression               |   min | median |     itr/sec | mem_alloc |
 |:-------------------------|------:|-------:|------------:|----------:|
-| vis_simplify(x, y, 10)   | 452µs |  507µs | 1821.325793 |        0B |
-| vis_simplify_r(x, y, 10) | 124ms |  145ms |    5.663136 |    96.8MB |
+| vis_simplify(x, y, 10)   | 454µs |  502µs | 1903.706532 |        0B |
+| vis_simplify_r(x, y, 10) | 129ms |  129ms |    5.694004 |    96.8MB |
 
 <img src="man/figures/README-bench-1.png" width="100%" />
 

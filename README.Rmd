@@ -26,6 +26,7 @@ library(visvalingam)
 
 <!-- badges: start -->
 ![](https://img.shields.io/badge/cool-useless-green.svg)
+[![R-CMD-check](https://github.com/coolbutuseless/visvalingam/workflows/R-CMD-check/badge.svg)](https://github.com/coolbutuseless/visvalingam/actions)
 <!-- badges: end -->
 
 `{visvilingam}` implements Visvilngam's Line Simplification Algorithm, 
