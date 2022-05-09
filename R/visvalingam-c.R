@@ -12,6 +12,8 @@
 #' Note that when vertices are removed from the line, the effective areas of the
 #' neighbouring vertices need to be recalculated.
 #'
+#' `vis_index` returns an index of whether a vertex would be removed (1) or not (0). 
+#' 
 #' @param x,y points
 #' @param n number of points to keep
 #'
@@ -25,11 +27,20 @@
 #' x <- runif(N)
 #' y <- runif(N)
 #' vis_simplify(x, y, 4)
+#' 
+#' (idx <- vis_index(x, y, 4))
+#' ## recreate vis_simplify() above
+#' list(x = x[idx > 0], y = y[idx > 0] )
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vis_simplify <- function(x, y, n) {
-  .Call(simplify_, x, y, n, FALSE)
+  .Call(simplify_, x, y, n, FALSE, FALSE)
 }
 
+#' @name vis_simplify
+#' @export
+vis_index <- function(x, y, n) {
+  .Call(simplify_, x, y, n, FALSE, TRUE)
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Fast calculation of \emph{effective areas} for all nodes according to
@@ -60,7 +71,7 @@ vis_simplify <- function(x, y, n) {
 #' vis_effective_areas(x, y)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vis_effective_areas <- function(x, y) {
-  .Call(simplify_, x, y, 2, TRUE)
+  .Call(simplify_, x, y, 2, TRUE, FALSE)
 }
 
 

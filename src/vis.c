@@ -23,7 +23,7 @@ double tri(double x1, double x2, double x3, double y1, double y2, double y3) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
+SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_, SEXP return_idx_) {
 
   if (length(x_) != length(y_)) {
     error("(x,y) vectors must be the same length");
@@ -38,7 +38,8 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
   unsigned int n = asInteger(n_);
   unsigned int N = length(x_);
   unsigned int calc_areas = asInteger(calc_areas_);
-
+  unsigned int return_idx = asInteger(return_idx_);
+  
   // Clamp N to sensible values
   if (n < 2) {
     n = 2;
@@ -174,7 +175,14 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
     areas[0] = INFINITY;
     areas[N-1] = INFINITY;
     memcpy(REAL(res_), areas, N * sizeof(double));
-  } else {
+  }
+  
+  if (return_idx) {
+    res_ = PROTECT(allocVector(INTSXP, N));
+    memcpy(INTEGER(res_), valid, N * sizeof(int));
+  }
+  
+  if (!return_idx && !calc_areas) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Create R list of Final (x, y) coordinates
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -225,7 +233,7 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
   free(version);
   cpq_free(pq);
 
-  if (calc_areas) {
+  if (calc_areas || return_idx) {
     UNPROTECT(1);
   } else{
     UNPROTECT(4);

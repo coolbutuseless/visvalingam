@@ -7,7 +7,7 @@ extern SEXP simplify_();
 
 static const R_CallMethodDef CEntries[] = {
 
-  {"simplify_", (DL_FUNC) &simplify_, 4},
+  {"simplify_", (DL_FUNC) &simplify_, 5},
   {NULL , NULL, 0}
 };
 
