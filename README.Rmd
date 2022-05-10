@@ -63,8 +63,8 @@ Image Credit: [Mike Bostock](https://bost.ocks.org/mike/simplify/)
 
 * `vis_simplify(x, y, n)` to simplify the given line (defined by its `x` and `y` 
 coordinates) down to just `n` vertices.  Implemented in C.
-* `vis_indices(x, y, n)` return a logical vector of indiciating the location of 
-  the `n` simplified points in the original vectors.
+* `vis_indices(x, y, n)` return a logical vector indicating the location of 
+  the `n` simplified points within the original coordinates.
 * `vis_effective_areas(x, y)` calculates the effective areas for all vertices.
   End points are assigned an infinite area.  Implemented in C.
 
