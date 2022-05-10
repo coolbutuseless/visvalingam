@@ -13,6 +13,24 @@
 #include "priorityqueue.h"
 
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Different return types for this algo
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#define VIS_SIMPLIFY 0
+#define VIS_AREAS    1
+#define VIS_INDICES  2
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Calculate area of a triangle
+// [TypeA] If the central point has duplicates on both sides: area = -2
+// [TypeB] If the central point has a duplicate on one side only: area = 01
+//
+// Further: adjust these areas so they are removed in LIFO order by
+// reducing their area for each one that is discovered
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double tri(double x1, double x2, double x3, double y1, double y2, double y3) {
 
   static int count = 0;
@@ -28,6 +46,7 @@ double tri(double x1, double x2, double x3, double y1, double y2, double y3) {
     return(-1 - count/1e6);
   }
 
+  // If no dupes, then return actual area
   return fabs(
     ((x1 - x2) * (y3 - y2)) -
     ((x3 - x2) * (y1 - y2))
@@ -37,7 +56,7 @@ double tri(double x1, double x2, double x3, double y1, double y2, double y3) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
+SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_type_) {
 
   if (length(x_) != length(y_)) {
     error("(x,y) vectors must be the same length");
@@ -51,7 +70,7 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
   double *y = REAL(y_);
   unsigned int n = asInteger(n_);
   unsigned int N = length(x_);
-  unsigned int calc_areas = asInteger(calc_areas_);
+  unsigned int calc_type = asInteger(calc_type_);
 
   // Clamp N to sensible values
   if (n < 2) {
@@ -93,8 +112,8 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
     v->idx = j;
     v->version = 1;
 
-    // Rprintf("init %i = %f\n", j, area);
-
+    // this is a 'max heap' so use negative areas, such that the
+    // 'most negative' area is pulled off the queue first.
     cpq_insert(pq, v, -area);
   }
 
@@ -121,7 +140,7 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
     // Remove this vertex from the list of valid vertices
     valid[idx] = FALSE;
 
-    if (calc_areas) {
+    if (calc_type == VIS_AREAS) {
       // find the area of this triangle to be removed
       double area = tri(
         x[L[idx]], x[idx], x[R[idx]],
@@ -185,7 +204,7 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
 
   SEXP res_;
 
-  if (calc_areas) {
+  if (calc_type == VIS_AREAS) {
     // Copy the areas into an R numeric vector.
     // Any negative areas should be replaced by 'zero'
     // as this information distinguishing the different
@@ -197,13 +216,15 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
     }
     resp[  0] = INFINITY;
     resp[N-1] = INFINITY;
-  } else {
+  } else if (calc_type == VIS_INDICES) {
+    res_ = PROTECT(allocVector(LGLSXP, N));
+    memcpy(INTEGER(res_), valid, N * sizeof(unsigned int));
+  } else if (calc_type == VIS_SIMPLIFY) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Create R list of Final (x, y) coordinates
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     SEXP xres_   = PROTECT(allocVector(REALSXP, n));
     SEXP yres_   = PROTECT(allocVector(REALSXP, n));
-
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Copy the valid coordinates into the results for R
@@ -216,7 +237,6 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
         j++;
       }
     }
-
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Allocate a list with 2 members
@@ -236,6 +256,8 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
     SET_STRING_ELT(names,  0, mkChar("x"));
     SET_STRING_ELT(names,  1, mkChar("y"));
     setAttrib(res_, R_NamesSymbol, names);
+  } else {
+    error("Unknown calculation type: ", calc_type);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -248,9 +270,9 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
   free(version);
   cpq_free(pq);
 
-  if (calc_areas) {
+  if (calc_type == VIS_AREAS || calc_type == VIS_INDICES) {
     UNPROTECT(1);
-  } else{
+  } else if (calc_type == VIS_SIMPLIFY) {
     UNPROTECT(4);
   }
   return res_;

@@ -8,7 +8,9 @@ Visvalingam's line simplification algorithm}
 vis_effective_areas(x, y)
 }
 \arguments{
-\item{x, y}{points}
+\item{x}{points}
+
+\item{y}{points}
 }
 \value{
 numeric vector of areas - one for each point.  The first and last

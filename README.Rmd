@@ -63,6 +63,8 @@ Image Credit: [Mike Bostock](https://bost.ocks.org/mike/simplify/)
 
 * `vis_simplify(x, y, n)` to simplify the given line (defined by its `x` and `y` 
 coordinates) down to just `n` vertices.  Implemented in C.
+* `vis_indices(x, y, n)` return a logical vector of indiciating the location of 
+  the `n` simplified points in the original vectors.
 * `vis_effective_areas(x, y)` calculates the effective areas for all vertices.
   End points are assigned an infinite area.  Implemented in C.
 
@@ -84,7 +86,7 @@ remotes::install_github('coolbutuseless/visvalingam')
 
 ## Line Simplification
 
-#### Raw map of Australia
+#### Raw map of Mainland Australia
 
 ```{r raw_australia}
 library(rworldmap)
@@ -100,7 +102,7 @@ plot(mainland, type = 'l', asp = 1)
 title(sprintf("Mainland Australia\n%i points", nrow(mainland)))
 ```
 
-#### Simplified map of Australian (n = 100)
+#### Simplified map of Australia (n = 100)
 
 ```{r simplified_australis}
 # `simplify()` returns a simple list of the remaining x,y coordinates

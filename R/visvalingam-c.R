@@ -1,16 +1,15 @@
 
+VIS_SIMPLIFY <- 0L
+VIS_AREAS    <- 1L
+VIS_INDICES  <- 2L
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Line simplification using Visvalingam's algorithm
 #'
-#' Visvalingam's algorithm deletes vertices from a line based up the effecive
-#' area of the triangle defined by the vertex and its current neighbours.
-#'
-#' The vertex with the minimal area is removed from the line at each iteration
-#' until the target number of points is reached.
-#'
-#' Note that when vertices are removed from the line, the effective areas of the
-#' neighbouring vertices need to be recalculated.
+#' Visvalingam's algorithm iteratively deletes vertices from a line based up
+#' the \code{effecive area} of the triangle defined by the vertex and its
+#' current neighbours.
 #'
 #' @param x,y points
 #' @param n number of points to keep
@@ -27,7 +26,32 @@
 #' vis_simplify(x, y, 4)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vis_simplify <- function(x, y, n) {
-  .Call(simplify_, x, y, n, FALSE)
+  .Call(simplify_, x, y, n, VIS_SIMPLIFY)
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Line simplification using Visvalingam's algorithm
+#'
+#' Visvalingam's algorithm iteratively deletes vertices from a line based up
+#' the \code{effecive area} of the triangle defined by the vertex and its
+#' current neighbours.
+#'
+#' @inheritParams vis_simplify
+#'
+#' @return logical vector giving location of the \code{n} simplified indices
+#'
+#' @export
+#'
+#' @examples
+#' set.seed(1)
+#' N <- 10
+#' x <- runif(N)
+#' y <- runif(N)
+#' vis_indices(x, y, 4)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vis_indices <- function(x, y, n) {
+  .Call(simplify_, x, y, n, VIS_INDICES);
 }
 
 
@@ -44,8 +68,7 @@ vis_simplify <- function(x, y, n) {
 #' for the frist and last point).  This value could then be used to set a
 #' threshold level and select subsets of points.
 #'
-#'
-#' @param x,y points
+#' @inheritParams vis_simplify
 #'
 #' @return numeric vector of areas - one for each point.  The first and last
 #' points are assigned an infinite area. Runs of duplicate points will have
@@ -61,24 +84,26 @@ vis_simplify <- function(x, y, n) {
 #' vis_effective_areas(x, y)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vis_effective_areas <- function(x, y) {
-  .Call(simplify_, x, y, 2, TRUE)
+  .Call(simplify_, x, y, 2, VIS_AREAS)
 }
 
 
 
 if (FALSE) {
   set.seed(1)
-  N <- 1000
+  N <- 10
   x <- seq(0, 1, length.out = N)
   y <- runif(N)
   n <- 4
 
-  # order(effective_areas(x, y))
+  vis_simplify(x, y, n)
+  vis_indices(x, y, n)
+  vis_effective_areas(x, y)
 
   bench::mark(
-    simplify_r(x, y, n),
-    simplify(x, y, n),
-    effective_areas(x, y),
+    vis_simplify_r(x, y, n),
+    vis_simplify(x, y, n),
+    vis_effective_areas(x, y),
     check = FALSE
   )
 
