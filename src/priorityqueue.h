@@ -13,7 +13,6 @@ typedef struct cpq_t {
   vertex **vert;
   uint32_t size;
   uint32_t len;
-  uint32_t max_list_idx;
 } cpq_t;
 
 

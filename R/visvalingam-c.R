@@ -1,7 +1,7 @@
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Fast line simplification using Visvalingam's algorithm
+#' Line simplification using Visvalingam's algorithm
 #'
 #' Visvalingam's algorithm deletes vertices from a line based up the effecive
 #' area of the triangle defined by the vertex and its current neighbours.
@@ -32,7 +32,7 @@ vis_simplify <- function(x, y, n) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Fast calculation of \emph{effective areas} for all nodes according to
+#' Calculation of \emph{effective areas} for all nodes according to
 #' Visvalingam's line simplification algorithm
 #'
 #' In visvalingam's algorithm, each vertex in the line has an associated
@@ -48,7 +48,8 @@ vis_simplify <- function(x, y, n) {
 #' @param x,y points
 #'
 #' @return numeric vector of areas - one for each point.  The first and last
-#' points are assigned an infinite area.
+#' points are assigned an infinite area. Runs of duplicate points will have
+#' an effective area of zero.
 #'
 #' @export
 #'

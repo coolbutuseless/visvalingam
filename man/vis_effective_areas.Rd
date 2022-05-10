@@ -2,13 +2,18 @@
 % Please edit documentation in R/visvalingam-c.R
 \name{vis_effective_areas}
 \alias{vis_effective_areas}
-\title{Fast calculation of \emph{effective areas} for all nodes according to
+\title{Calculation of \emph{effective areas} for all nodes according to
 Visvalingam's line simplification algorithm}
 \usage{
 vis_effective_areas(x, y)
 }
 \arguments{
 \item{x, y}{points}
+}
+\value{
+numeric vector of areas - one for each point.  The first and last
+points are assigned an infinite area. Runs of duplicate points will have
+an effective area of zero.
 }
 \description{
 In visvalingam's algorithm, each vertex in the line has an associated

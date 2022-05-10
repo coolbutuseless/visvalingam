@@ -1,7 +1,7 @@
 Package: visvalingam
 Type: Package
 Title: Visvalingam-Wyatt Polyline Simplification
-Version: 0.1.0
+Version: 0.1.1
 Author: mikefc
 Maintainer: mikefc <mikefc@coolbutuseless.com>
 Description: Visvalingam-Wyatt polyline simplification.
@@ -13,3 +13,6 @@ Imports:
     priorityqueue
 Remotes:
     coolbutuseless/priorityqueue
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

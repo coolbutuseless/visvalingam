@@ -14,6 +14,20 @@
 
 
 double tri(double x1, double x2, double x3, double y1, double y2, double y3) {
+
+  static int count = 0;
+
+  unsigned int lzero = (x1 == x2) && (y1 == y2);
+  unsigned int rzero = (x3 == x2) && (y3 == y2);
+
+  if (lzero && rzero) {
+    count++;
+    return(-2 - count/1e6);
+  } else if (lzero || rzero) {
+    count++;
+    return(-1 - count/1e6);
+  }
+
   return fabs(
     ((x1 - x2) * (y3 - y2)) -
     ((x3 - x2) * (y1 - y2))
@@ -79,6 +93,8 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
     v->idx = j;
     v->version = 1;
 
+    // Rprintf("init %i = %f\n", j, area);
+
     cpq_insert(pq, v, -area);
   }
 
@@ -133,7 +149,7 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
 
 
     // Recalculate tri area for Left vertex (as long as it isn't first vertex)
-    if (lidx > 1) {
+    if (lidx > 0) {
       version[lidx]++;
       double area = tri(
           x[L[lidx]], x[lidx], x[R[lidx]],
@@ -170,10 +186,17 @@ SEXP simplify_(SEXP x_, SEXP y_, SEXP n_, SEXP calc_areas_) {
   SEXP res_;
 
   if (calc_areas) {
+    // Copy the areas into an R numeric vector.
+    // Any negative areas should be replaced by 'zero'
+    // as this information distinguishing the different
+    // duplicated points is not important to the user
     res_ = PROTECT(allocVector(REALSXP, N));
-    areas[0] = INFINITY;
-    areas[N-1] = INFINITY;
-    memcpy(REAL(res_), areas, N * sizeof(double));
+    double *resp = REAL(res_);
+    for (int i = 0; i < N; i++) {
+      resp[i] = areas[i] < 0 ? 0 : areas[i];
+    }
+    resp[  0] = INFINITY;
+    resp[N-1] = INFINITY;
   } else {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Create R list of Final (x, y) coordinates

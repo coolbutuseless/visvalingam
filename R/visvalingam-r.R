@@ -62,12 +62,20 @@ vis_simplify_r <- function(x, y, n) {
 
 
 if (FALSE) {
+  library(visvalingam)
+
   set.seed(1)
   N <- 10
   x <- seq(0, 1, length.out = N)
   y <- runif(N)
 
-  vis_naive1(x, y, 8)
+  vis_simplify(x, y, 4)
+
+  x <- x[c(1:3, 3, 3, 4:8, 8, 8, 8, 8, 9, 9, 9, 9, 10)]
+  y <- y[c(1:3, 3, 3, 4:8, 8, 8, 8, 8, 9, 9, 9, 9, 10)]
+  vis_simplify(x, y, 4)
+
+  vis_effective_areas(x, y)
 }
 
 

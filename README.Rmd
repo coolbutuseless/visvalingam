@@ -63,10 +63,15 @@ Image Credit: [Mike Bostock](https://bost.ocks.org/mike/simplify/)
 
 * `vis_simplify(x, y, n)` to simplify the given line (defined by its `x` and `y` 
 coordinates) down to just `n` vertices.  Implemented in C.
-* `vis_simplify_r(x, y, n)` a plain R version of the algorithm.  The purpose of 
-  this function is to illustrate the algorithm. It is **not** efficient.
 * `vis_effective_areas(x, y)` calculates the effective areas for all vertices.
   End points are assigned an infinite area.  Implemented in C.
+
+
+#### For illustrative purposes
+
+* `vis_simplify_r(x, y, n)` a plain R version of the algorithm.  The purpose of 
+  this function is to illustrate the algorithm. It is **not** efficient.
+
 
 ## Installation
 

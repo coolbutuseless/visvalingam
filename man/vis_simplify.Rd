@@ -2,7 +2,7 @@
 % Please edit documentation in R/visvalingam-c.R
 \name{vis_simplify}
 \alias{vis_simplify}
-\title{Fast line simplification using Visvalingam's algorithm}
+\title{Line simplification using Visvalingam's algorithm}
 \usage{
 vis_simplify(x, y, n)
 }
@@ -10,6 +10,9 @@ vis_simplify(x, y, n)
 \item{x, y}{points}
 
 \item{n}{number of points to keep}
+}
+\value{
+list with elements \code{x} and \code{y} of the simplified line
 }
 \description{
 Visvalingam's algorithm deletes vertices from a line based up the effecive

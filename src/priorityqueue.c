@@ -49,7 +49,6 @@ cpq_t * cpq_create() {
   pq->priority     = calloc(pq->size, sizeof(double));
   pq->vert         = calloc(pq->size, sizeof(vertex *));
   pq->len          = 0;
-  pq->max_list_idx = 0;
 
   for (int i=0; i<pq->size; i++) {
     pq->priority[i] = 0;
@@ -197,7 +196,6 @@ void cpq_insert(cpq_t *pq, vertex * obj, double priority) {
   pq->vert    [pq->len] = obj;
 
   pq->len++;
-  pq->max_list_idx++;
 
   cpq_sift_up(pq);
 }

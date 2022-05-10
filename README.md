@@ -46,12 +46,15 @@ Image Credit: [Mike Bostock](https://bost.ocks.org/mike/simplify/)
 -   `vis_simplify(x, y, n)` to simplify the given line (defined by its
     `x` and `y` coordinates) down to just `n` vertices. Implemented in
     C.
--   `vis_simplify_r(x, y, n)` a plain R version of the algorithm. The
-    purpose of this function is to illustrate the algorithm. It is
-    **not** efficient.
 -   `vis_effective_areas(x, y)` calculates the effective areas for all
     vertices. End points are assigned an infinite area. Implemented in
     C.
+
+#### For illustrative purposes
+
+-   `vis_simplify_r(x, y, n)` a plain R version of the algorithm. The
+    purpose of this function is to illustrate the algorithm. It is
+    **not** efficient.
 
 ## Installation
 
@@ -128,7 +131,7 @@ title(sprintf("Tasmania\n%i points", nrow(tassie)))
 areas <- visvalingam::vis_effective_areas(tassie[,1], tassie[,2])
 quantile(areas)
 #>           0%          25%          50%          75%         100% 
-#> 1.602275e-07 4.621124e-05 1.362252e-04 8.383088e-04          Inf
+#> 1.602275e-07 3.723681e-05 1.362252e-04 8.383088e-04          Inf
 
 # Remove 99% of the vertices
 threshold <- quantile(areas, probs = 0.99)
@@ -165,8 +168,8 @@ res <- bench::mark(
 
 | expression               |   min | median |     itr/sec | mem_alloc |
 |:-------------------------|------:|-------:|------------:|----------:|
-| vis_simplify(x, y, 10)   | 454µs |  502µs | 1903.706532 |        0B |
-| vis_simplify_r(x, y, 10) | 129ms |  129ms |    5.694004 |    96.8MB |
+| vis_simplify(x, y, 10)   | 455µs |  477µs | 2031.731125 |        0B |
+| vis_simplify_r(x, y, 10) | 106ms |  121ms |    7.034032 |    96.8MB |
 
 <img src="man/figures/README-bench-1.png" width="100%" />
 
